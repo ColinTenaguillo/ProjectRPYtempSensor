@@ -7,6 +7,8 @@ import mef
 Externe = "d7:ef:13:27:15:29" #Mac adress of the sensor
 Interne = "d6:c6:c7:39:a2:e8"
 
+#Note this must be run as root!
+
 while True :   # here we make a bluetooth scan, maybe a function would be more appropriate but it works
     class ScanDelegate(DefaultDelegate):
         def __init__(self):

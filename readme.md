@@ -5,3 +5,7 @@ Python tasks for the project :
 2. Translate the hexadecimal raw data to decimal true value.
 3. Put value on a MySQL database.
 4. Display real time data on a web page
+
+
+For any questions or way to improve this project here are my contact information :
+Colin.tenaguillo@orange.fr
