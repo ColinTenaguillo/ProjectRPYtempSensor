@@ -9,6 +9,8 @@ Python tasks for the project :
 3. Put value on a MySQL database.
 4. Display real time data on a web page
 
+Sensor used :
+http://en.tzonedigital.cn/en/product/details/233.aspx
 
-For any questions or way to improve this project here are my contact information :
+For any questions :
 Colin.tenaguillo@orange.fr
