@@ -52,3 +52,16 @@ def ecriturescansql_histo(macadress,devices) :
                         db.rollback()  # if error, rollback
             db.close()  # disconnect from DB
 
+
+def recupNomTables():
+    db = pymysql.connect(address, username, pwd, database)  # Connecting the the DB
+    cursor = db.cursor()  # Variable that we will use to write in the DB
+    sql = "SHOW TABLES"
+    cursor.execute(sql)  # launch the command
+    results_tuple = cursor.fetchall()
+    results_list = list(results_tuple)
+    for result in results_list :
+        result.replace("('","")
+        result.replace("',)","")
+    db.close()  # disconnect from DB
+    return results
