@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset = "utf-8" />
+        <meta http-equiv="refresh" content="5; url=http://172.16.3.158:5000" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
+    <title>Inventory Database</title>
+    <style type="text/css">
+        body { background-color: white; }
+    </style>
+    </head>
+    <body class="body">
+        <div class="jumbotron text-center">
+            <div class="page-header">
+                <h3 class="text-primary">Mes données provenant de MySQL </h3>
+            </div>
+            <table class="table table-striped table-bordered table-hover">
+                <tr>
+                    <th>Nom</th>
+                    <th>ID</th>
+                    <th>Temp</th>
+                    <th>Hum</th>
+                    <th>Batt</th>
+                </tr>
+                {% for emp in templateData %}
+                <tr>
+                    <th>{{emp[0]}}</th>
+                    <th>{{emp[1]}}</th>
+                    <th>{{emp[2]}}</th>
+                    <th>{{emp[3]}}</th>
+                    <th>{{emp[4]}}</th>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </body>
+</html>
