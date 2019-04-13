@@ -1,67 +1,62 @@
 #!/usr/bin/env python
 # -*-coding:Utf-8 -*
 
-"""mef.py: Functions"""
+"""mef.py: Functions."""
 
-import pymysql #library for mysql
+
+import pymysql
+import itertools
+import datetime
 
 address = "localhost"
 username = "root"
 pwd = "root"
 database = "Capteurs"
 
-#We admit that in the .py we call this function a scandelegate with bluepy has been done
-#Function that will translate and write data we received from the bluetooth temperature sensor in the PhpMysql DB
-def ecriturescansql(macadress,devices) : #define the function with 2 arguments
-    for dev in devices: #basic loop for all the devices
-        if dev.addr in macadress : #dev.addr = bluetooth devices   variable macadress is given when we call the function
-            db = pymysql.connect(address, username, pwd, database) #Connecting the the DB
-            cursor = db.cursor() #Variable that we will use to write in the DB
-            for (adtype, desc, value) in dev.getScanData(): #Loop for all data
-                if len(value) == 38 : #Selecting the good raw data of our temperature sensor(value 38 depending on the sensor)
-                    Temperature = int(value[24:28], 16) / 100 #temperature data is between 24:28 and put it in decimal, we divide per 100 cause of the comma
-                    Humidite = int(value[28:32], 16) / 100 #Same for Humidity
-                    Battery = int(value[20:22], 16) #Same for battery
-                    sql = "UPDATE `Capteurs` SET `Temp`=" + str(Temperature)\
-                          + ",`Hum`=" + str(Humidite) + ",`Batt`=" + str(Battery)\
-                          + " WHERE `ID` = '" + macadress + "'" #sql bash command we want to use
+
+def insertintocapteurs(macadress, devices):
+    """Insert dans la BD Capteurs."""
+    for dev in devices:
+        if dev.addr in macadress:
+            db = pymysql.connect(address, username, pwd, database)
+
+            cursor = db.cursor()
+            for (_adtype, _desc, value) in dev.getScanData():
+                if len(value) == 38:
+                    temperature = str(int(value[24:28], 16) / 100)
+                    humidite = str(int(value[28:32], 16) / 100)
+                    battery = str(int(value[20:22], 16))
+                    sql = (
+                        f"INSERT INTO `{macadress}`"
+                        f"(MacAddress,Temp,Hum,Bat,Heure) "
+                        f"VALUES (`{macadress}`,`{temperature}`,"
+                        f"`{humidite}`,`{battery}`,`{heureminute()}`);"
+                    )
+
                     try:
-                        cursor.execute(sql) #launch the command
-                        db.commit() #commit changes
-                    except:
-                        db.rollback() #if error, rollback
-            db.close() #disconnect from DB
-
-def ecriturescansql_histo(macadress,devices) :
-    for dev in devices:  # basic loop for all the devices
-        if dev.addr in macadress:  # dev.addr = bluetooth devices   variable macadress is given when we call the function
-            db = pymysql.connect(address, username, pwd, database)  # Connecting the the DB
-            cursor = db.cursor()  # Variable that we will use to write in the DB
-            for (adtype, desc, value) in dev.getScanData():  # Loop for all data
-                if len(value) == 38:  # Selecting the good raw data of our temperature sensor(value 38 depending on the sensor)
-                    Temperature = int(value[24:28], 16) / 100  # temperature data is between 24:28 and put it in decimal, we divide per 100 cause of the comma
-                    Humidite = int(value[28:32], 16) / 100  # Same for Humidity
-                    Battery = int(value[20:22], 16)  # Same for battery
-                    sql = "UPDATE `Capteurs_Histo` SET `Temp`=" + str(Temperature)\
-                          + ",`Hum`=" + str(Humidite) + ",`Batt`=" + str(Battery)\
-                          + " WHERE `ID` = '" + macadress + "'"  # sql bash command we want to use
-                    try:
-                        cursor.execute(sql)  # launch the command
-                        db.commit()  # commit changes
-                    except:
-                        db.rollback()  # if error, rollback
-            db.close()  # disconnect from DB
+                        cursor.execute(sql)
+                        db.commit()
+                    finally:
+                        db.close()
 
 
-def recupNomTables():
-    db = pymysql.connect(address, username, pwd, database)  # Connecting the the DB
-    cursor = db.cursor()  # Variable that we will use to write in the DB
+def recupnomtables():
+    """Get name of the tables in DB Capteurs."""
+    db = pymysql.connect(address, username, pwd, database)
+    cursor = db.cursor()
     sql = "SHOW TABLES"
-    cursor.execute(sql)  # launch the command
-    results_tuple = cursor.fetchall()
-    results_list = list(results_tuple)
-    for result in results_list :
-        result.replace("('","")
-        result.replace("',)","")
-    db.close()  # disconnect from DB
-    return results
+    cursor.execute(sql)
+    results_tuple = cursor.fetchall()  # return list of tuple
+    results_array = list(itertools.chain.from_iterable(results_tuple))
+    for result in results_array:
+        result.replace("'", "")
+        result.replace("',)", "")
+    db.close()
+    return results_array
+
+
+def heureminute():
+    """Get local hour and minute."""
+    date = datetime.datetime.now()
+    heuremin = date.time().strftime("%H.%M")
+    return heuremin
