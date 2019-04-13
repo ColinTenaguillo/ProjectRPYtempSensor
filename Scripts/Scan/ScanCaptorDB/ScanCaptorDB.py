@@ -11,7 +11,7 @@ import mef
 
 
 class ScanDelegate(DefaultDelegate):
-    """Scan for bluetooth devices"""
+    """Scan for bluetooth devices."""
 
     def __init__(self):
         DefaultDelegate.__init__(self)
