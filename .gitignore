@@ -123,3 +123,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+Projet.code-workspace
+workspace_Rasp.code-workspace
